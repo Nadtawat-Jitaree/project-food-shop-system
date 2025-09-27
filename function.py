@@ -1,5 +1,5 @@
 import datetime
-def ordlProduct():
+def SellProduct():
     menus = read_data("menus.txt")
     members = read_data("members.txt")
 
@@ -10,7 +10,7 @@ def ordlProduct():
     total_price = 0
 
     while True:
-        hlm = "| No.|  Id  |  Type  |  Name       |  Stock  |  Price  |"
+        hlm = "| No.|Id    |Type    |Name         |Stock    |Price    |"
         line = "="*len(hlm)
         mess = ""
         mess += f"\n{line}\n{'List Menus':^{len(hlm)}}\n{line}\n{hlm}\n{line}\n"
@@ -166,7 +166,7 @@ def Reports():
             details = read_data(order_d)
 
             print(f"\n{'='*20}\n{'Order List':^20}\n{'='*20}\n")
-            hol = f"{'No.':<5}{'OrderID':<15}{'Member':<15}{'Table':<10}{'Total':<10}{'Date':<30}"
+            hol = f"{'No.':<5}| {'OrderID':<15} | {'Member':<15} | {'Table':<10} | {'Total':<10} | {'Date':<30}|"
             print(f"{'='*len(hol)}\n{hol}\n{'='*len(hol)}")
             n = 1
             for order in orders:
@@ -176,8 +176,9 @@ def Reports():
                     if mb[0] == mb_id:
                         fullname = mb[1]
                         break
-                print(f"{n:<5}{order_id:<15}{fullname:<15}{table_name:<10}{total_price:<10}{create_date}")
+                print(f"{n:<5}| {order_id:<15} | {fullname:<15} | {table_name:<10} | {total_price:<10} | {create_date:<30}|")
                 n += 1
+            print(f"{'='*len(hol)}")
 
             ord = input("\nEnter order number to view details (0=cancel): ")
             if ord == "0":
@@ -210,7 +211,7 @@ def Reports():
 
             n = 1
             for d in details:
-                if d[0] == order_id: 
+                if d[0] == order_id:
                     mn_id, qty, price = d[1], d[2], d[3]
                     menu_name = ""
                     for mn in menus:
@@ -250,7 +251,7 @@ def Reports():
                 print(f"Date       : {create_date}")
                 print(f"Total Price: {total_price}")
                 print("-"*50)
-                print(f"{'No.':<5}{'Menu':<20}{'Qty':<5}{'Price':<10}")
+                print(f"|{'No.':<5}|{'Menu':<20}|{'Qty':<5}|{'Price':<10}|")
                 print("-"*50)
 
                 n = 1
@@ -263,6 +264,6 @@ def Reports():
                                 menu_name = mn[2]
                                 break
 
-                        print(f"{n:<5}{menu_name:<20}{qty:<5}{price:<10}")
+                        print(f"|{n:<5}|{menu_name:<20}|{qty:<5}|{price:<10}|")
                         n += 1
                 print("="*50,"\n")
