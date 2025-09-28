@@ -417,4 +417,4 @@ def reportMember():
 
     print("-"*len(hr))
     print(f"|{'Total Sales':<35}| {total_member:<11,.2f}|")
-    print("="*len(hr))
+    print("="*len(hr),"\n")
