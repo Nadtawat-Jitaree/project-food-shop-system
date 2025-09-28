@@ -6,8 +6,12 @@ def SellProduct():
     order_id = str(int(datetime.datetime.now().timestamp()))
     table_name = input("Enter Table Name : ")
     mb_id = input("Enter Member ID (or 0 if guest): ")
+
     order_details = []
-    total_price = 0
+    subtotal = 0
+    discount_rate = 0.0
+    if mb_id != "0":
+        discount_rate = 0.10 
 
     while True:
         hlm = "| No.|Id    |Type    |Name         |Stock    |Price    |"
@@ -20,6 +24,7 @@ def SellProduct():
             n += 1
         mess += f"{line}"
         print(mess)
+
         choice = input("Enter menu number (or 0 to finish): ")
         if choice == "0":
             break
@@ -42,11 +47,14 @@ def SellProduct():
 
         line_total = qty * price
         order_details.append([order_id, mn_id, str(qty), str(line_total)])
-        total_price += line_total
+        subtotal += line_total
 
     if not order_details:
         print("No orders made.")
         return
+
+    discount_amount = subtotal * discount_rate
+    total_price = subtotal - discount_amount
 
     with open("order_head.txt", "a", encoding="UTF_8") as fout:
         fout.write(order_id + "," + mb_id + "," + str(total_price) + "," +
@@ -60,7 +68,26 @@ def SellProduct():
         for m in menus:
             fout.write(",".join(m) + "\n")
 
-    print("Order saved successfully!")
+    print(f"\n{'='*30}\nReceipt\n{'='*30}")
+    print(f"Order ID   : {order_id}")
+    print(f"Table Name : {table_name}")
+    print(f"Member ID  : {mb_id}")
+    print("-"*30)
+    for od in order_details:
+        mn_id, qty, line_total = od[1], od[2], od[3]
+        name = ""
+        for mn in menus:
+            if mn[0] == mn_id:
+                name = mn[2]
+                break
+        print(f"{name:<15} x{qty:<3} = {line_total}")
+    print("-"*30)
+    print(f"Subtotal   : {subtotal:.2f}")
+    if mb_id != "0":
+        print(f"Discount(10%)   : {discount_amount:.2f}")
+    print(f"Total      : {total_price:.2f}")
+    print("="*30)
+    print("\nOrder saved successfully!\n")
 
 def read_data(filename):
     datas = []
@@ -153,13 +180,15 @@ def Members():
 
 def Reports():
     h = "Reports Menu"
-    print(f"\n{'='*20}\n{h:^20}\n{'='*20}\n1. Report Orders\n2. Report Daily\n{'='*20}\n")
+    print(f"\n{'='*20}\n{h:^20}\n{'='*20}\n1. Report Orders\n2. Report Daily\n3. Report Member\n{'='*20}\n")
     choice = input("Enter your choice : ")
     match choice:
         case "1":
             reportOrder()
         case "2":
             reportDay()
+        case "3":
+            reportMember()
 
 def reportOrder():
     order_h = "order_head.txt"
@@ -281,4 +310,76 @@ def reportDay():
 
     print("-"*50)
     print(f"{'Total Sales':<25}{total_day:<10.2f}")
+    print("="*50)
+
+def reportMember():
+    order_h = "order_head.txt"
+    order_d = "order_detail.txt"
+    members = read_data("members.txt")
+    menus = read_data("menus.txt")
+
+    print("\n--- Members List ---")
+    n = 1
+    for mb in members:
+        print(f"{n}. {mb[1]} (ID {mb[0]}) Tel {mb[2]}")
+        n += 1
+
+    sel = input("\nEnter member number to view report (0=cancel): ")
+    if sel == "0":
+        print("Cancel report.")
+        return
+
+    try:
+        sel = int(sel)
+        mb_id = members[sel-1][0]
+        fullname = members[sel-1][1]
+    except:
+        print("Invalid choice.")
+        return
+
+    orders = read_data(order_h)
+    details = read_data(order_d)
+
+    order_ids = []
+    for order in orders:
+        order_id, ob_mb_id, total_price, table_name, create_date = order
+        if ob_mb_id == mb_id:
+            order_ids.append(order_id)
+
+    if not order_ids:
+        print(f"\nNo orders found for member: {fullname}")
+        return
+
+    sales_summary = {}
+    total_member = 0
+
+    for d in details:
+        if d[0] in order_ids:
+            mn_id, qty, price = d[1], int(d[2]), float(d[3])
+
+            menu_name = ""
+            for mn in menus:
+                if mn[0] == mn_id:
+                    menu_name = mn[2]
+                    break
+
+            if menu_name not in sales_summary:
+                sales_summary[menu_name] = {"qty": 0, "total": 0.0}
+            sales_summary[menu_name]["qty"] += qty
+            sales_summary[menu_name]["total"] += price
+            total_member += price
+
+    print("\n" + "="*50)
+    print(f"Sales Report for Member: {fullname} (ID:{mb_id})")
+    print("="*50)
+    print(f"{'No.':<5}{'Menu':<20}{'Qty':<5}{'Total':<10}")
+    print("-"*50)
+
+    n = 1
+    for menu_name, summary in sales_summary.items():
+        print(f"{n:<5}{menu_name:<20}{summary['qty']:<5}{summary['total']:<10.2f}")
+        n += 1
+
+    print("-"*50)
+    print(f"{'Total Sales':<25}{total_member:<10.2f}")
     print("="*50)
