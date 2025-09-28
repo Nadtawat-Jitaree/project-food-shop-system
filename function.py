@@ -205,9 +205,10 @@ def Reports():
             print(f"Table Name : {table_name}")
             print(f"Date       : {create_date}")
             print(f"Total Price: {total_price}")
-            print("-"*50)
-            print(f"{'No.':<5}{'Menu':<20}{'Qty':<5}{'Price':<10}")
-            print("-"*50)
+            hr = f"|{'No.':<5}|{'Menu':<20}|{'Qty':<5}|{'Price':<10}|"
+            print("-"*len(hr))
+            print(hr)
+            print("-"*len(hr))
 
             n = 1
             for d in details:
@@ -218,52 +219,8 @@ def Reports():
                         if mn[0] == mn_id:
                             menu_name = mn[2]
                             break
-                    print(f"{n:<5}{menu_name:<20}{qty:<5}{price:<10}")
+                    print(f"|{n:<5}|{menu_name:<20}|{qty:<5}|{price:<10}|")
                     n += 1
-            print("="*50)
-
-    order_h = "order_head.txt"
-    order_d = "order_detail.txt"
-    members = read_data("members.txt")
-    menus = read_data("menus.txt")
-
-    h = "Reports"
-    print(f"\n{'='*20}\n{h:^20}\n{'='*20}\n1. Report Orders\n{'='*20}\n")
-    choice = input("Enter your choice : ")
-    match choice:
-        case "1":
-            orders = read_data(order_h)
-            details = read_data(order_d)
-
-            for order in orders:
-                order_id, mb_id, total_price, table_name, create_date = order
-
-                fullname = "Guest"
-                for mb in members:
-                    if mb[0] == mb_id:
-                        fullname = mb[1]
-                        break
-
-                print("\n" + "="*50)
-                print(f"Order ID   : {order_id}")
-                print(f"Member     : {fullname} (ID:{mb_id})")
-                print(f"Table Name : {table_name}")
-                print(f"Date       : {create_date}")
-                print(f"Total Price: {total_price}")
-                print("-"*50)
-                print(f"|{'No.':<5}|{'Menu':<20}|{'Qty':<5}|{'Price':<10}|")
-                print("-"*50)
-
-                n = 1
-                for d in details:
-                    if d[0] == order_id: 
-                        mn_id, qty, price = d[1], d[2], d[3]
-                        menu_name = ""
-                        for mn in menus:
-                            if mn[0] == mn_id:
-                                menu_name = mn[2]
-                                break
-
-                        print(f"|{n:<5}|{menu_name:<20}|{qty:<5}|{price:<10}|")
-                        n += 1
-                print("="*50,"\n")
+            print("-"*len(hr))
+            print(f"{'|':>34}{total_price:<10}|")
+            print("="*len(hr),"\n")
