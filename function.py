@@ -348,11 +348,13 @@ def reportMember():
     members = read_data("members.txt")
     menus = read_data("menus.txt")
 
-    print("\n--- Members List ---")
+    print(f"\n{'='*52}\n|{'Members List':^50}|\n{'='*52}")
     n = 1
+    print(f"| No. | {'FullName':<20} | {'ID':<6} | {'Telephone':<10} |\n{'='*52}")
     for mb in members:
-        print(f"{n}. {mb[1]} (ID {mb[0]}) Tel {mb[2]}")
+        print(f"| {n:<3} | {mb[1]:<20} | {mb[0]:<6} | {mb[2]:<10} |")
         n += 1
+    print("="*52)
 
     sel = input("\nEnter member number to view report (0=cancel): ")
     if sel == "0":
@@ -399,17 +401,20 @@ def reportMember():
             sales_summary[menu_name]["total"] += price
             total_member += price
 
-    print("\n" + "="*50)
-    print(f"Sales Report for Member: {fullname} (ID:{mb_id})")
-    print("="*50)
-    print(f"{'No.':<5}{'Menu':<20}{'Qty':<5}{'Total':<10}")
-    print("-"*50)
+    hr = f"|{'No.':<5}|{'Menu':<17}|{'Qty':<11}|{'Total':<12}|"
+    print("\n" + "="*len(hr))
+    print(f"|{'Sales Report by Member':^{len(hr)-2}}|")
+    print("="*len(hr))
+    print(f"| Member : {fullname:<26} ID: {mb_id:<6} |")
+    print("-"*len(hr))
+    print(hr)
+    print("-"*len(hr))
 
     n = 1
     for menu_name, summary in sales_summary.items():
-        print(f"{n:<5}{menu_name:<20}{summary['qty']:<5}{summary['total']:<10.2f}")
+        print(f"| {n:<4}| {menu_name:<16}| {summary['qty']:<10,.2f}| {summary['total']:<11,.2f}|")
         n += 1
 
-    print("-"*50)
-    print(f"{'Total Sales':<25}{total_member:<10.2f}")
-    print("="*50)
+    print("-"*len(hr))
+    print(f"|{'Total Sales':<35}| {total_member:<11,.2f}|")
+    print("="*len(hr))
