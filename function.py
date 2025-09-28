@@ -208,15 +208,19 @@ def Members():
 
 def Reports():
     h = "Reports Menu"
-    print(f"\n{'='*20}\n|{h:^18}|\n{'='*20}\n|{'1. Report Orders':^18}|\n|{'2. Report Daily':^18}|\n|{'3. Report Member':^18}|\n{'='*20}\n")
-    choice = input("Enter your choice : ")
-    match choice:
-        case "1":
-            reportOrder()
-        case "2":
-            reportDay()
-        case "3":
-            reportMember()
+    while True:
+        print(f"\n{'='*30}\n|{h:^28}|\n{'='*30}\n| {'1. Order Summary Report':<26} |\n| {'2. Daily Sales Report':<26} |\n| {'3. Member Sales Report':<26} |\n| {'4. Back To Menus':<26} |\n{'='*30}\n")
+        choice = input("Enter your choice : ")
+        match choice:
+            case "1":
+                reportOrder()
+            case "2":
+                reportDay()
+            case "3":
+                reportMember()
+            case "4":
+                print("Back to Menus...\n")
+                break
 
 def reportOrder():
     order_h = "order_head.txt"
