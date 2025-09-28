@@ -2,9 +2,9 @@ from function import SellProduct ,Menus , Members , Reports
 
 def Main():
     while True:
-        h = "Food Shop System"
+        h = "| Food Shop System |"
         line = "="*len(h)
-        print(f"{line}\n{h}\n{line}\n1. Sell Product \n2. Menus\n3. Member\n4. Reports\n5. Exit\n{line}")
+        print(f"{line}\n{h}\n{line}\n| {'1. Sell Product':<16} |\n| {'2. Menus':<16} |\n| {'3. Member':<16} |\n| {'4. Reports':<16} |\n| {'5. Exit':<16} |\n{line}")
         choice = input("Enter your choice : ")
         match choice:
             case "1":

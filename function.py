@@ -152,75 +152,133 @@ def Members():
                 break
 
 def Reports():
+    h = "Reports Menu"
+    print(f"\n{'='*20}\n{h:^20}\n{'='*20}\n1. Report Orders\n2. Report Daily\n{'='*20}\n")
+    choice = input("Enter your choice : ")
+    match choice:
+        case "1":
+            reportOrder()
+        case "2":
+            reportDay()
+
+def reportOrder():
     order_h = "order_head.txt"
     order_d = "order_detail.txt"
     members = read_data("members.txt")
     menus = read_data("menus.txt")
+    orders = read_data(order_h)
+    details = read_data(order_d)
 
-    h = "Reports"
-    print(f"\n{'='*20}\n{h:^20}\n{'='*20}\n1. Report Orders\n{'='*20}\n")
-    choice = input("Enter your choice : ")
-    match choice:
-        case "1":
-            orders = read_data(order_h)
-            details = read_data(order_d)
+    hol = f"|{'No.':<4}| {'OrderID':<15} | {'Member':<15} | {'Table':<10} | {'Total':<10} | {'Date':<30}|"
+    print(f"\n{'='*len(hol)}\n|{'Order List':^98}|")
+    print(f"{'='*len(hol)}\n{hol}\n{'='*len(hol)}")
+    n = 1
+    for order in orders:
+        order_id, mb_id, total_price, table_name, create_date = order
+        fullname = "Guest"
+        for mb in members:
+            if mb[0] == mb_id:
+                fullname = mb[1]
+                break
+        print(f"|{n:<4}| {order_id:<15} | {fullname:<15} | {table_name:<10} | {total_price:<10} | {create_date:<30}|")
+        n += 1
+    print(f"{'='*len(hol)}")
 
-            print(f"\n{'='*20}\n{'Order List':^20}\n{'='*20}\n")
-            hol = f"{'No.':<5}| {'OrderID':<15} | {'Member':<15} | {'Table':<10} | {'Total':<10} | {'Date':<30}|"
-            print(f"{'='*len(hol)}\n{hol}\n{'='*len(hol)}")
-            n = 1
-            for order in orders:
-                order_id, mb_id, total_price, table_name, create_date = order
-                fullname = "Guest"
-                for mb in members:
-                    if mb[0] == mb_id:
-                        fullname = mb[1]
-                        break
-                print(f"{n:<5}| {order_id:<15} | {fullname:<15} | {table_name:<10} | {total_price:<10} | {create_date:<30}|")
-                n += 1
-            print(f"{'='*len(hol)}")
+    ord = input("\nEnter order number to view details (0=cancel): ")
+    if ord == "0":
+        print("Cancel report.")
+        return
+    
+    try:
+        ord = int(ord)
+        order = orders[ord-1]
+    except:
+        print("Invalid choice.")
+        return
 
-            ord = input("\nEnter order number to view details (0=cancel): ")
-            if ord == "0":
-                print("Cancel report.")
-                return
+    order_id, mb_id, total_price, table_name, create_date = order
+    fullname = "Guest"
+    for mb in members:
+        if mb[0] == mb_id:
+            fullname = mb[1]
+            break
 
-            try:
-                ord = int(ord)
-                order = orders[ord-1]
-            except:
-                print("Invalid choice.")
-                return
+    hr = f"|{'No.':<5}|{'Menu':<20}|{'Qty':<5}|{'Price':<10}|"
+    print("\n" + "="*len(hr))
+    print(f"Order ID   : {order_id}")
+    print(f"Member     : {fullname} (ID:{mb_id})")
+    print(f"Table Name : {table_name}")
+    print(f"Date       : {create_date}")
+    print(f"Total Price: {total_price}")
+    print("-"*len(hr))
+    print(hr)
+    print("-"*len(hr))
 
-            order_id, mb_id, total_price, table_name, create_date = order
-            fullname = "Guest"
-            for mb in members:
-                if mb[0] == mb_id:
-                    fullname = mb[1]
+    n = 1
+    for d in details:
+        if d[0] == order_id:
+            mn_id, qty, price = d[1], d[2], d[3]
+            menu_name = ""
+            for mn in menus:
+                if mn[0] == mn_id:
+                    menu_name = mn[2]
+                    break
+            print(f"|{n:<5}|{menu_name:<20}|{qty:<5}|{price:<10}|")
+            n += 1
+    print("-"*len(hr))
+    print(f"{'|':>34}{total_price:<10}|")
+    print("="*len(hr),"\n")
+
+def reportDay():
+    order_h = "order_head.txt"
+    order_d = "order_detail.txt"
+    menus = read_data("menus.txt")
+
+    day = input("Enter date (YYYY-MM-DD): ")
+
+    orders = read_data(order_h)
+    details = read_data(order_d)
+    order_ids = []
+    for order in orders:
+        order_id, mb_id, total_price, table_name, create_date = order
+        # startswith ใช้ตรวจสอบว่าค่า day ที่รับมาตรงกับ create_date ไหนบ้าง
+        if create_date.startswith(day):
+            order_ids.append(order_id)
+
+    if not order_ids:
+        print(f"\nNo orders found for {day}")
+        return
+
+    sales_summary = {}
+    total_day = 0
+
+    for d in details:
+        if d[0] in order_ids: 
+            mn_id, qty, price = d[1], int(d[2]), float(d[3])
+
+            menu_name = ""
+            for mn in menus:
+                if mn[0] == mn_id:
+                    menu_name = mn[2]
                     break
 
-            print("\n" + "="*50)
-            print(f"Order ID   : {order_id}")
-            print(f"Member     : {fullname} (ID:{mb_id})")
-            print(f"Table Name : {table_name}")
-            print(f"Date       : {create_date}")
-            print(f"Total Price: {total_price}")
-            hr = f"|{'No.':<5}|{'Menu':<20}|{'Qty':<5}|{'Price':<10}|"
-            print("-"*len(hr))
-            print(hr)
-            print("-"*len(hr))
+            if menu_name not in sales_summary:
+                sales_summary[menu_name] = {"qty": 0, "total": 0.0}
+            sales_summary[menu_name]["qty"] += qty
+            sales_summary[menu_name]["total"] += price
+            total_day += price
 
-            n = 1
-            for d in details:
-                if d[0] == order_id:
-                    mn_id, qty, price = d[1], d[2], d[3]
-                    menu_name = ""
-                    for mn in menus:
-                        if mn[0] == mn_id:
-                            menu_name = mn[2]
-                            break
-                    print(f"|{n:<5}|{menu_name:<20}|{qty:<5}|{price:<10}|")
-                    n += 1
-            print("-"*len(hr))
-            print(f"{'|':>34}{total_price:<10}|")
-            print("="*len(hr),"\n")
+    print("\n" + "="*50)
+    print(f"Daily Sales Report for {day}")
+    print("="*50)
+    print(f"{'No.':<5}{'Menu':<20}{'Qty':<5}{'Total':<10}")
+    print("-"*50)
+
+    n = 1
+    for menu_name, summary in sales_summary.items():
+        print(f"{n:<5}{menu_name:<20}{summary['qty']:<5}{summary['total']:<10.2f}")
+        n += 1
+
+    print("-"*50)
+    print(f"{'Total Sales':<25}{total_day:<10.2f}")
+    print("="*50)
