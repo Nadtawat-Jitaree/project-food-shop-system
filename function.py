@@ -17,10 +17,10 @@ def SellProduct():
         hlm = "| No.|Id    |Type    |Name         |Stock    |Price    |"
         line = "="*len(hlm)
         mess = ""
-        mess += f"\n{line}\n{'List Menus':^{len(hlm)}}\n{line}\n{hlm}\n{line}\n"
+        mess += f"\n{line}\n|{'List Menus':^54}|\n{line}\n{hlm}\n{line}\n"
         n = 1
         for data in menus:
-            mess += f"|{n:3} |{data[0]:6}|{data[1]:8}|{data[2]:13}|{data[3]:9}|{data[4]:9}|\n"
+            mess += f"|{n:3} |{data[0]:6}|{data[1]:8}|{data[2]:13}|{int(data[3]):9,.2f}|{int(data[4]):9,.2f}|\n"
             n += 1
         mess += f"{line}"
         print(mess)
@@ -68,25 +68,25 @@ def SellProduct():
         for m in menus:
             fout.write(",".join(m) + "\n")
 
-    print(f"\n{'='*30}\nReceipt\n{'='*30}")
-    print(f"Order ID   : {order_id}")
-    print(f"Table Name : {table_name}")
-    print(f"Member ID  : {mb_id}")
-    print("-"*30)
+    print(f"\n{'='*40}\n|{'Receipt':^38}|\n{'='*40}")
+    print(f"| Order ID     : {order_id:<21} |")
+    print(f"| Table Name   : {table_name:<21} |")
+    print(f"| Member ID    : {mb_id:<21} |")
+    print("-"*40)
     for od in order_details:
-        mn_id, qty, line_total = od[1], od[2], od[3]
+        mn_id, qty, line_total = od[1], od[2], int(float(od[3]))
         name = ""
         for mn in menus:
             if mn[0] == mn_id:
                 name = mn[2]
                 break
-        print(f"{name:<15} x{qty:<3} = {line_total}")
-    print("-"*30)
-    print(f"Subtotal   : {subtotal:.2f}")
+        print(f"| {name:<12} x{qty:<5} = {line_total:<14,.2f} |")
+    print("-"*40)
+    print(f"| Subtotal     : {subtotal:<21,.2f} |")
     if mb_id != "0":
-        print(f"Discount(10%)   : {discount_amount:.2f}")
-    print(f"Total      : {total_price:.2f}")
-    print("="*30)
+        print(f"| Discount(10%): {discount_amount:<21,.2f} |")
+    print(f"| Total        : {total_price:<21,.2f} |")
+    print("="*40)
     print("\nOrder saved successfully!\n")
 
 def read_data(filename):
@@ -101,7 +101,7 @@ def Menus():
     filename = "menus.txt"
     while True:
         h = "Menus"
-        print(f"\n{'='*20}\n{h:^20}\n{'='*20}\n1. List Menus\n2. Add Menu\n3. Back to Menus\n{'='*20}\n")
+        print(f"\n{'='*20}\n|{h:^18}|\n{'='*20}\n|{'1. List Menus':<18}|\n|{'2. Add Menu':<18}|\n|{'3. Add Stock':<18}|\n|{'4. Back to Menus':<18}|\n{'='*20}\n")
         choice = input("Enter your choice : ")
         match choice:
             case "1":
@@ -109,22 +109,22 @@ def Menus():
                 hlm = "| No.|  Id  |  Type  |  Name       |  Stock  |  Price  |"
                 line = "="*len(hlm)
                 mess = ""
-                mess += f"\n{line}\n{'List Menus':^{len(hlm)}}\n{line}\n{hlm}\n{line}\n"
+                mess += f"\n{line}\n|{'List Menus':^54}|\n{line}\n{hlm}\n{line}\n"
                 n = 1
                 for data in datas:
-                    mess += f"|{n:3} |{data[0]:6}|{data[1]:8}|{data[2]:13}|{data[3]:9}|{data[4]:9}|\n"
+                    mess += f"|{n:3} |{data[0]:6}|{data[1]:8}|{data[2]:13}|{int(data[3]):9,.2f}|{int(data[4]):9,.2f}|\n"
                     n += 1
                 mess += f"{line}"
                 print(mess)
             case "2":
-                hdm = "Enter Data Menu."
-                line = "-"*len(hdm)
-                print(f"\n{line}\n{hdm}\n{line}")
-                mn_id = input("Enter ID : ")
-                type = input("Enter Type : ")
-                name = input("Enter Name : ")
-                stock = input("Enter stock : ")
-                price = input("Enter price : ")
+                hdm = "Add Menu"
+                line = "-"*20
+                print(f"\n{line}\n|{hdm:^18}|\n{line}")
+                mn_id = input("Enter Menu ID : ")
+                type = input("Enter Menu Type : ")
+                name = input("Enter Menu Name : ")
+                stock = input("Enter Menu Stock : ")
+                price = input("Enter Menu price : ")
                 print("\nConfirm To Add This Menu?(Y/N)")
                 confirm = input("Enter your confirm : ")
                 confirm = confirm.upper()
@@ -136,13 +136,41 @@ def Menus():
                 else:
                     print("You cancle to add menu.")
             case "3":
+                datas = read_data(filename)
+                hlm = "| No.|  Id  |  Type  |  Name       |  Stock  |  Price  |"
+                line = "="*len(hlm)
+                mess = ""
+                mess += f"\n{line}\n|{'Add Stock - Select Menu':^54}|\n{line}\n{hlm}\n{line}\n"
+                n = 1
+                for data in datas:
+                    mess += f"|{n:3} |{data[0]:6}|{data[1]:8}|{data[2]:13}|{data[3]:9}|{data[4]:9}|\n"
+                    n += 1
+                mess += f"{line}"
+                print(mess)
+
+                try:
+                    choice = int(input("Enter menu number to add stock: "))
+                    if choice < 1 or choice > len(datas):
+                        print("Invalid menu number.")
+                        continue
+                    add_qty = int(input("Enter quantity to add: "))
+                    datas[choice-1][3] = str(int(datas[choice-1][3]) + add_qty)
+
+                    with open(filename, "w", encoding="UTF_8") as fout:
+                        for m in datas:
+                            fout.write(",".join(m) + "\n")
+                    print(f"Stock updated successfully! New stock for {datas[choice-1][2]} = {datas[choice-1][3]}")
+                except:
+                    print("Invalid input.")
+            case "4":
                 print("Back to Menus...\n")
                 break
+
 def Members():
     filename = "members.txt"
     while True:
         h = "Members"
-        print(f"\n{'='*20}\n{h:^20}\n{'='*20}\n1. List Members\n2. Add Member\n3. Back to Menus\n{'='*20}\n")
+        print(f"\n{'='*20}\n|{h:^18}|\n{'='*20}\n| {'1. List Members':<16} |\n| {'2. Add Member':<16} |\n| {'3. Back to Menus':<16} |\n{'='*20}\n")
         choice = input("Enter your choice : ")
         match choice:
             case "1":
@@ -150,7 +178,7 @@ def Members():
                 hlm = "| No.|  Id  |  FullName          |  tel      |"
                 line = "="*len(hlm)
                 mess = ""
-                mess += f"\n{line}\n{'List Menus':^{len(hlm)}}\n{line}\n{hlm}\n{line}\n"
+                mess += f"\n{line}\n|{'List Menus':^44}|\n{line}\n{hlm}\n{line}\n"
                 n = 1
                 for data in datas:
                     mess += f"|{n:3} |{data[0]:6}|{data[1]:20}|{data[2]:11}|\n"
@@ -158,12 +186,12 @@ def Members():
                 mess += f"{line}"
                 print(mess)
             case "2":
-                hdm = "Enter Data Member."
-                line = "-"*len(hdm)
-                print(f"\n{line}\n{hdm}\n{line}")
-                mb_id = input("Enter ID : ")
-                fullname = input("Enter FullName : ")
-                tel = input("Enter telephone number : ")
+                hdm = "Add Member"
+                line = "-"*20
+                print(f"\n{line}\n|{hdm:^18}|\n{line}")
+                mb_id = input("Enter Member ID : ")
+                fullname = input("Enter Member FullName : ")
+                tel = input("Enter Member Telephone Number : ")
                 print("\nConfirm To Add This Member?(Y/N)")
                 confirm = input("Enter your confirm : ")
                 confirm = confirm.upper()
@@ -173,14 +201,14 @@ def Members():
                     fout.close()
                     print("Save Data Member allready.\n")
                 else:
-                    print("You cancle to add menu.")
+                    print("You cancle to add member.")
             case "3":
                 print("Back to Menus...\n")
                 break
 
 def Reports():
     h = "Reports Menu"
-    print(f"\n{'='*20}\n{h:^20}\n{'='*20}\n1. Report Orders\n2. Report Daily\n3. Report Member\n{'='*20}\n")
+    print(f"\n{'='*20}\n|{h:^18}|\n{'='*20}\n|{'1. Report Orders':^18}|\n|{'2. Report Daily':^18}|\n|{'3. Report Member':^18}|\n{'='*20}\n")
     choice = input("Enter your choice : ")
     match choice:
         case "1":
@@ -198,8 +226,8 @@ def reportOrder():
     orders = read_data(order_h)
     details = read_data(order_d)
 
-    hol = f"|{'No.':<4}| {'OrderID':<15} | {'Member':<15} | {'Table':<10} | {'Total':<10} | {'Date':<30}|"
-    print(f"\n{'='*len(hol)}\n|{'Order List':^98}|")
+    hol = f"|{'No.':<4}| {'OrderID':<15} | {'Member':<20} | {'Table':<10} | {'Total':<10} | {'Date':<30}|"
+    print(f"\n{'='*len(hol)}\n|{'Order List':^103}|")
     print(f"{'='*len(hol)}\n{hol}\n{'='*len(hol)}")
     n = 1
     for order in orders:
@@ -209,7 +237,7 @@ def reportOrder():
             if mb[0] == mb_id:
                 fullname = mb[1]
                 break
-        print(f"|{n:<4}| {order_id:<15} | {fullname:<15} | {table_name:<10} | {total_price:<10} | {create_date:<30}|")
+        print(f"|{n:<4}| {order_id:<15} | {fullname:<20} | {table_name:<10} | {total_price:<10} | {create_date:<30}|")
         n += 1
     print(f"{'='*len(hol)}")
 
@@ -232,13 +260,15 @@ def reportOrder():
             fullname = mb[1]
             break
 
-    hr = f"|{'No.':<5}|{'Menu':<20}|{'Qty':<5}|{'Price':<10}|"
+    hr = f"|{'No.':<5}|{'Menu':<15}|{'Qty':<10}|{'Price':<10}|"
     print("\n" + "="*len(hr))
-    print(f"Order ID   : {order_id}")
-    print(f"Member     : {fullname} (ID:{mb_id})")
-    print(f"Table Name : {table_name}")
-    print(f"Date       : {create_date}")
-    print(f"Total Price: {total_price}")
+    print(f"|{'Order Detail':^43}|")
+    print("" + "="*len(hr))
+    print(f"| Order ID   : {order_id:<29}|")
+    print(f"| Member     : {fullname} ID : {mb_id:<18}|")
+    print(f"| Table Name : {table_name:<29}|")
+    print(f"| Date       : {create_date:<29}|")
+    print(f"| Total Price: {int(float(total_price)):<29,.2f}|")
     print("-"*len(hr))
     print(hr)
     print("-"*len(hr))
@@ -252,10 +282,10 @@ def reportOrder():
                 if mn[0] == mn_id:
                     menu_name = mn[2]
                     break
-            print(f"|{n:<5}|{menu_name:<20}|{qty:<5}|{price:<10}|")
+            print(f"| {n:<4}| { menu_name:<14}| {int(float(qty)):<9,.2f}| {int(float(price)):<9,.2f}|")
             n += 1
     print("-"*len(hr))
-    print(f"{'|':>34}{total_price:<10}|")
+    print(f"|{'|':>33} {int(float(total_price)):<9,.2f}|")
     print("="*len(hr),"\n")
 
 def reportDay():
@@ -297,20 +327,20 @@ def reportDay():
             sales_summary[menu_name]["total"] += price
             total_day += price
 
-    print("\n" + "="*50)
-    print(f"Daily Sales Report for {day}")
-    print("="*50)
-    print(f"{'No.':<5}{'Menu':<20}{'Qty':<5}{'Total':<10}")
-    print("-"*50)
+    print("\n" + "="*53)
+    print(f"| {'Daily Sales Report for':>30} {day:<18} |")
+    print("="*53)
+    print(f"| {'No.':<5} | {'Menu':<15} | {'Qty':<10} | {'Total':<10} |")
+    print("-"*53)
 
     n = 1
     for menu_name, summary in sales_summary.items():
-        print(f"{n:<5}{menu_name:<20}{summary['qty']:<5}{summary['total']:<10.2f}")
+        print(f"| {n:<5} | {menu_name:<15} | {summary['qty']:<10,.2f} | {summary['total']:<10,.2f} |")
         n += 1
 
-    print("-"*50)
-    print(f"{'Total Sales':<25}{total_day:<10.2f}")
-    print("="*50)
+    print("-"*53)
+    print(f"| {'Total Sales':<23} | {total_day:<23,.2f} |")
+    print("="*53)
 
 def reportMember():
     order_h = "order_head.txt"

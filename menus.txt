@@ -1,3 +1,4 @@
-1,Drink,Watermalon,0,65
-2,Food,Noodle,45,50
-3,Food,beef,20,75
+1,Drink,Watermalon,700,65
+2,Food,Noodle,110,50
+3,Food,beef,110,75
+4,Food,Chicken,500,25
