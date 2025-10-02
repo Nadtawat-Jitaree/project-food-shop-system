@@ -16,8 +16,10 @@ def Main():
             case "4":
                 Reports()
             case "5":
-                print("Exit Program.")
+                print("Exit Program...")
                 break
+            case _ :
+                print("\nInvalid value.\nPlease try again.\n")
     
     
 if __name__ == "__main__":

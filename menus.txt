@@ -1,5 +1,2 @@
-1,Drink,Watermalon,680,65
-2,Food,Noodle,110,50
-3,Food,beef,110,75
-4,Food,Chicken,500,25
-5,Drink,Water,181,15
+1,Food,Pizza,70,125
+2,Drink,Watermelon,300,25
