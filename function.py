@@ -2,7 +2,7 @@ import datetime
 def SellProduct():
     menus = read_data("menus.txt")
     members = read_data("members.txt")
-
+    # เจนจาก จำนวนวินาทีจากปี 1970
     order_id = str(int(datetime.datetime.now().timestamp()))
     table_name = input("Enter Table Name : ")
     mb_id = input("Enter Member ID (or 0 if guest): ")
@@ -62,20 +62,7 @@ def SellProduct():
 
     discount_amount = subtotal * discount_rate
     total_price = subtotal - discount_amount
-    try:
-        with open("order_head.txt", "a", encoding="UTF_8") as fout:
-            fout.write(order_id + "," + mb_id + "," + str(total_price) + "," +
-                    table_name + "," + str(datetime.datetime.now()) + "\n")
 
-        with open("order_detail.txt", "a", encoding="UTF_8") as fout:
-            for od in order_details:
-                fout.write(",".join(od) + "\n")
-
-        with open("menus.txt", "w", encoding="UTF_8") as fout:
-            for m in menus:
-                fout.write(",".join(m) + "\n")
-    except:
-        print("An error occurred uploading.")
 
     print(f"\n{'='*40}\n|{'Receipt':^38}|\n{'='*40}")
     print(f"| Order ID     : {order_id:<21} |")
@@ -96,6 +83,22 @@ def SellProduct():
         print(f"| Discount(10%): {discount_amount:<21,.2f} |")
     print(f"| Total        : {total_price:<21,.2f} |")
     print("="*40)
+
+    try:
+        with open("order_head.txt", "a", encoding="UTF_8") as fout:
+            fout.write(order_id + "," + mb_id + "," + str(total_price) + "," +
+                    table_name + "," + str(datetime.datetime.now()) + "\n")
+
+        with open("order_detail.txt", "a", encoding="UTF_8") as fout:
+            for od in order_details:
+                fout.write(",".join(od) + "\n")
+
+        with open("menus.txt", "w", encoding="UTF_8") as fout:
+            for m in menus:
+                fout.write(",".join(m) + "\n")
+    except:
+        print("An error occurred uploading.")
+
     print("\nOrder saved successfully!\n")
 
 def read_data(filename):
