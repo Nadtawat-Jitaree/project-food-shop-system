@@ -1,7 +1,7 @@
 import datetime
 def SellProduct():
-    menus = read_data("menus.txt")
-    members = read_data("members.txt")
+    menus = read_data("Storage/menus.txt")
+    members = read_data("Storage/members.txt")
     # เจนจาก จำนวนวินาทีจากปี 1970
     order_id = str(int(datetime.datetime.now().timestamp()))
     table_name = input("Enter Table Name : ")
@@ -85,15 +85,15 @@ def SellProduct():
     print("="*40)
 
     try:
-        with open("order_head.txt", "a", encoding="UTF_8") as fout:
+        with open("Storage/order_head.txt", "a", encoding="UTF_8") as fout:
             fout.write(order_id + "," + mb_id + "," + str(total_price) + "," +
                     table_name + "," + str(datetime.datetime.now()) + "\n")
 
-        with open("order_detail.txt", "a", encoding="UTF_8") as fout:
+        with open("Storage/order_detail.txt", "a", encoding="UTF_8") as fout:
             for od in order_details:
                 fout.write(",".join(od) + "\n")
 
-        with open("menus.txt", "w", encoding="UTF_8") as fout:
+        with open("Storage/menus.txt", "w", encoding="UTF_8") as fout:
             for m in menus:
                 fout.write(",".join(m) + "\n")
     except:
@@ -114,7 +114,7 @@ def read_data(filename):
 
 
 def Menus():
-    filename = "menus.txt"
+    filename = "Storage/menus.txt"
     try:
         while True:
             h = "Menus"
@@ -208,7 +208,7 @@ def AddMenu(filename):
 
 
 def Members():
-    filename = "members.txt"
+    filename = "Storage/members.txt"
     while True:
         h = "Members"
         print(f"\n{'='*20}\n|{h:^18}|\n{'='*20}\n| {'1. List Members':<16} |\n| {'2. Add Member':<16} |\n| {'3. Back to Menus':<16} |\n{'='*20}\n")
@@ -284,10 +284,10 @@ def Reports():
 
 def reportOrder():
     try:
-        members = read_data("members.txt")
-        menus = read_data("menus.txt")
-        orders = read_data("order_head.txt")
-        details = read_data("order_detail.txt")
+        members = read_data("Storage/members.txt")
+        menus = read_data("Storage/menus.txt")
+        orders = read_data("Storage/order_head.txt")
+        details = read_data("Storage/order_detail.txt")
 
         hol = f"|{'No.':<4}| {'OrderID':<15} | {'Member':<20} | {'Table':<10} | {'Total':<10} | {'Date':<30}|"
         print(f"\n{'='*len(hol)}\n|{'Order List':^103}|")
@@ -355,9 +355,9 @@ def reportOrder():
 
 def reportDay():
     try:
-        order_h = "order_head.txt"
-        order_d = "order_detail.txt"
-        menus = read_data("menus.txt")
+        order_h = "Storage/order_head.txt"
+        order_d = "Storage/order_detail.txt"
+        menus = read_data("Storage/menus.txt")
 
         day = input("Enter date (YYYY-MM-DD): ")
 
@@ -413,10 +413,10 @@ def reportDay():
 
 def reportMember():
     try:
-        order_h = "order_head.txt"
-        order_d = "order_detail.txt"
-        members = read_data("members.txt")
-        menus = read_data("menus.txt")
+        order_h = "Storage/order_head.txt"
+        order_d = "Storage/order_detail.txt"
+        members = read_data("Storage/members.txt")
+        menus = read_data("Storage/menus.txt")
 
         print(f"\n{'='*52}\n|{'Members List':^50}|\n{'='*52}")
         n = 1

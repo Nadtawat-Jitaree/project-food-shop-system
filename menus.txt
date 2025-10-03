@@ -1,2 +1,0 @@
-1,Food,Pizza,70,125
-2,Drink,Watermelon,290,25
