@@ -1,2 +1,2 @@
-1,Food,Pizza,95,125
-2,Drink,Water,295,15
+1,Food,Pizza,950,125
+2,Drink,Water,240,15

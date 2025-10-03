@@ -85,6 +85,30 @@ def SellProduct():
     print("="*40)
 
     try:
+        date_str = datetime.datetime.now().strftime("%Y-%m-%d")
+        report_path = f"report_{date_str}.txt"
+        
+        with open(f"Reports/{report_path}", "a", encoding="UTF_8") as f:
+            f.write(f"\n{'='*40}\n|{'Receipt':^38}|\n{'='*40}\n")
+            f.write(f"\n| Order ID     : {order_id:<21} |\n")
+            f.write(f"\n| Table Name   : {table_name:<21} |\n")
+            f.write(f"\n| Member ID    : {mb_id:<21} |\n")
+            f.write(f"\n{'-'*40}\n")
+            for od in order_details:
+                mn_id, qty, line_total = od[1], od[2], int(float(od[3]))
+                name = ""
+                for mn in menus:
+                    if mn[0] == mn_id:
+                        name = mn[2]
+                        break
+                f.write(f"\n| {name:<12} x{qty:<5} = {line_total:<14,.2f} |\n")
+            f.write(f"\n{'-'*40}\n")
+            f.write(f"\n| Subtotal     : {subtotal:<21,.2f} |\n")
+            if mb_id != "0":
+                f.write(f"\n| Discount(10%): {discount_amount:<21,.2f} |\n")
+            f.write(f"\n| Total        : {total_price:<21,.2f} |\n")
+            f.write(f"\n{'='*40}\n")
+
         with open("Storage/order_head.txt", "a", encoding="UTF_8") as fout:
             fout.write(order_id + "," + mb_id + "," + str(total_price) + "," +
                     table_name + "," + str(datetime.datetime.now()) + "\n")
