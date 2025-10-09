@@ -142,7 +142,7 @@ def Menus():
     try:
         while True:
             h = "Menus"
-            print(f"\n{'='*20}\n|{h:^18}|\n{'='*20}\n|{'1. List Menus':<18}|\n|{'2. Add Menu':<18}|\n|{'3. Add Stock':<18}|\n|{'4. Back to Menus':<18}|\n{'='*20}\n")
+            print(f"\n{'='*20}\n|{h:^18}|\n{'='*20}\n|{'1. Menus':<18}|\n|{'2. Add Menu':<18}|\n|{'3. Add Stock':<18}|\n|{'4. Back to Menus':<18}|\n{'='*20}\n")
             choice = input("Enter your choice : ")
             match choice:
                 case "1":
@@ -167,13 +167,44 @@ def ListMenus(filename):
         hlm = "| No.|  Id  |  Type  |  Name       |  Stock  |  Price  |"
         line = "="*len(hlm)
         mess = ""
-        mess += f"\n{line}\n|{'List Menus':^54}|\n{line}\n{hlm}\n{line}\n"
+        mess += f"\n{line}\n|{'Menus':^54}|\n{line}\n{hlm}\n{line}\n"
         n = 1
         for data in datas:
             mess += f"|{n:3} |{data[0]:6}|{data[1]:8}|{data[2]:13}|{int(data[3]):9,.2f}|{int(data[4]):9,.2f}|\n"
             n += 1
         mess += f"{line}"
         print(mess)
+        choice = int(input("Enter menu number to edit or delete (-1 to exit) : "))
+        if choice and choice != -1:
+            print(f"\n{"-"*20}\nMenu\n{"-"*20}\n1. Edit Menu\n2. Delete Menu\n{"-"*20}\n")
+            menuc = input("Enter your choice : ")
+            match menuc:
+                case "1":
+                    n_name = input(f"Enter New Name({datas[choice-1][2]}) : ")
+                    n_type = input(f"Enter New Type({datas[choice-1][1]}) : ")
+                    confirm = input("Are you sure you want to change (Y/N) : ")
+                    match confirm:
+                        case "Y":
+                            datas[choice-1][2] = n_name
+                            datas[choice-1][1] = n_type
+                            with open(filename, "w", encoding="UTF_8") as f:
+                                for m in datas:
+                                    f.write(",".join(m) + "\n")
+                            print("Product change successful.")
+                        case "N":
+                            print("Change cancelled.")
+
+                case "2":
+                    confirm = input(f"Are you sure you want to delete({datas[choice-1][2]}) (Y/N) : ")
+                    match confirm:
+                        case "Y":
+                            datas.pop(choice-1)
+                            with open(filename, "w", encoding="UTF_8") as f:
+                                for m in datas:
+                                    f.write(",".join(m) + "\n")
+                            print("Product delete successful.")
+                        case "N":
+                            print("Delete cancelled.")
     except:
         print("An error occurred.")
 
