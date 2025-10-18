@@ -1,7 +1,19 @@
 import datetime
+def read_data(filename):
+    datas = []
+    try:
+        with open(filename) as fin:
+            for data in fin:
+                data = data.rstrip('\n')
+                datas.append(data.split(','))
+            return(datas)
+    except:
+        print("An error occurred while reading data.")
+
+
 def SellProduct():
     menus = read_data("Storage/menus.txt")
-    members = read_data("Storage/members.txt")
+
     # เจนจาก จำนวนวินาทีจากปี 1970
     order_id = str(int(datetime.datetime.now().timestamp()))
     table_name = input("Enter Table Name : ")
@@ -30,17 +42,17 @@ def SellProduct():
             mess += f"{line}"
             print(mess)
 
-            choice = input("Enter menu number (or 0 to finish): ")
-            if choice == "0":
+            menu_number = input("Enter menu number (or 0 to finish): ")
+            if menu_number == "0":
                 break
 
             try:
-                choice = int(choice)
-                mn_id, mtype, name, stock, price = menus[choice-1]
+                menu_number = int(menu_number)
+                mn_id, mtype, name, stock, price = menus[menu_number-1]
                 stock = int(stock)
                 price = float(price)
             except:
-                print("Invalid choice.")
+                print("Invalid menu_number.")
                 continue
 
             qty = int(input(f"Enter qty for {name}: "))
@@ -48,7 +60,7 @@ def SellProduct():
                 print("Not enough stock!")
                 continue
 
-            menus[choice-1][3] = str(stock - qty)
+            menus[menu_number-1][3] = str(stock - qty)
 
             line_total = qty * price
             order_details.append([order_id, mn_id, str(qty), str(line_total)])
@@ -125,17 +137,6 @@ def SellProduct():
 
     print("\nOrder saved successfully!\n")
 
-def read_data(filename):
-    datas = []
-    try:
-        with open(filename) as fin:
-            for data in fin:
-                data = data.rstrip('\n')
-                datas.append(data.split(','))
-            return(datas)
-    except:
-        print("An error occurred while reading data.")
-
 
 def Menus():
     filename = "Storage/menus.txt"
@@ -176,7 +177,7 @@ def ListMenus(filename):
         print(mess)
         choice = int(input("Enter menu number to edit or delete (-1 to exit) : "))
         if choice and choice != -1:
-            print(f"\n{"-"*20}\nMenu\n{"-"*20}\n1. Edit Menu\n2. Delete Menu\n{"-"*20}\n")
+            print(f"\n{"-"*20}\n{'Menu':^20}\n{"-"*20}\n1. Edit Menu\n2. Delete Menu\n{"-"*20}\n")
             menuc = input("Enter your choice : ")
             match menuc:
                 case "1":
@@ -292,6 +293,37 @@ def ListMembers(filename):
             n += 1
         mess += f"{line}"
         print(mess)
+        choice = int(input("Enter member number to edit or delete (-1 to exit) : "))
+        if choice and choice != -1:
+            print(f"\n{"-"*20}\n{'Member':^20}\n{"-"*20}\n1. Edit Member\n2. Delete Member\n{"-"*20}\n")
+            memberc = input("Enter your choice : ")
+            match memberc:
+                case "1":
+                    n_name = input(f"Enter New Name({datas[choice-1][1]}) : ")
+                    n_tel = input(f"Enter New Telephone({datas[choice-1][2]}) : ")
+                    confirm = input("Are you sure you want to change (Y/N) : ")
+                    match confirm:
+                        case "Y":
+                            datas[choice-1][1] = n_name
+                            datas[choice-1][2] = n_tel
+                            with open(filename, "w", encoding="UTF_8") as f:
+                                for m in datas:
+                                    f.write(",".join(m) + "\n")
+                            print("Member change successful.")
+                        case "N":
+                            print("Change cancelled.")
+
+                case "2":
+                    confirm = input(f"Are you sure you want to delete({datas[choice-1][1]}) (Y/N) : ")
+                    match confirm:
+                        case "Y":
+                            datas.pop(choice-1)
+                            with open(filename, "w", encoding="UTF_8") as f:
+                                for m in datas:
+                                    f.write(",".join(m) + "\n")
+                            print("Member delete successful.")
+                        case "N":
+                            print("Delete cancelled.")
     except:
         print("An error occurred.")
 
