@@ -442,14 +442,13 @@ def reportOrder():
 
 def reportDay():
     try:
-        order_h = "Storage/order_head.txt"
-        order_d = "Storage/order_detail.txt"
         menus = read_data("Storage/menus.txt")
+        orders = read_data("Storage/order_head.txt")
+        details = read_data("Storage/order_detail.txt")
 
         day = input("Enter date (YYYY-MM-DD): ")
 
-        orders = read_data(order_h)
-        details = read_data(order_d)
+
         order_ids = []
         for order in orders:
             order_id, mb_id, total_price, table_name, create_date = order
@@ -500,10 +499,10 @@ def reportDay():
 
 def reportMember():
     try:
-        order_h = "Storage/order_head.txt"
-        order_d = "Storage/order_detail.txt"
         members = read_data("Storage/members.txt")
         menus = read_data("Storage/menus.txt")
+        orders = read_data("Storage/order_head.txt")
+        details = read_data("Storage/order_detail.txt")
 
         print(f"\n{'='*52}\n|{'Members List':^50}|\n{'='*52}")
         n = 1
@@ -526,8 +525,7 @@ def reportMember():
             print("Invalid choice.")
             return
 
-        orders = read_data(order_h)
-        details = read_data(order_d)
+
 
         order_ids = []
         for order in orders:
